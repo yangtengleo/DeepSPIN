@@ -79,7 +79,7 @@ The loss function for the training is set by the section
   "loss" : {
       "type":               "ener_spin",
       "start_pref_e":       0.02,
-      "limit_pref_e":       1,
+      "limit_pref_e":       10,
       "start_pref_fr":      1000,
       "limit_pref_fr":      1,
       "start_pref_fm":      5000,
