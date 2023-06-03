@@ -1,2 +1,2 @@
-# DeepSpin
-DeepSpin method for magnetic systems
+# DeepSPIN
+DeepSPIN method for magnetic systems
