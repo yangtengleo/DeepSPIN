@@ -89,7 +89,7 @@ The hyper-parameters dedicated to DeepSPIN is set in the following section
     },
 ```
 * `use_spin` determines whether the atom type is magnetic. Here We set `true` for Ni and `false` for O.
-* `virtual_len` specifies the distance between the pseudo atom and its corresponding real atom. Here we set 0.4 $\text{\AA}$ for Ni.
+* `virtual_len` specifies the distance between the pseudo atom and its corresponding real atom. Here we set 0.4 Å for Ni.
 * `spin_norm` specifies the magnitude of the magnetic moment for each magnatic atom. Here we set 1.2737 $\mu_B$ for Ni.
 
 The loss function for the DeepSPIN model is set in the following section
