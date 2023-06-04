@@ -1,0 +1,36 @@
+#========================================#
+# initialization
+#========================================#
+units             metal
+dimension         3
+boundary          p p p
+atom_style        spin
+atom_modify       map array
+box               tilt large
+read_data         init.data
+
+#========================================#
+# interatomic potentials
+#========================================#
+pair_style        deepmd model.pb virtual_len 0.4 spin_norm 1.2737
+pair_coeff        * *
+
+neighbor          0.1 bin
+neigh_modify      every 1 check yes delay 0
+
+delete_atoms      overlap 0.05 all all
+timestep          0.0001
+
+#========================================#
+# compute & output options
+#========================================#
+compute           s all property/atom sp spx spy spz fmx fmy fmz fx fy fz
+dump              1 all custom 1 dump.out id x y z c_s[1] c_s[2] c_s[3] c_s[4] c_s[5] c_s[6] c_s[7] c_s[8] c_s[9] c_s[10]
+
+thermo_style      custom vol pe etotal
+thermo            10
+thermo_modify     line one format float %10.8f
+
+min_style         spin/lbfgs
+min_modify        line spin_cubic discrete_factor 10.0
+minimize          1.0e-12 1.0e-12 10000 20000
