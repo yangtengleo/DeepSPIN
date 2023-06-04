@@ -1,0 +1,12 @@
+# Settings for libraries used by specific LAMMPS packages
+# this file is auto-edited when those packages are included/excluded
+
+PKG_INC =   -std=c++11 -DHIGH_PREC -DLAMMPS_VERSION_NUMBER=20220623 -I/data/home/scv6266/run/WORK/hzt/DeepSpin_final/deepmd_root/include/ 
+PKG_PATH =    -L/data/home/scv6266/run/test/tensorflow_root/lib -L/data/home/scv6266/run/WORK/hzt/DeepSpin_final/deepmd_root/lib
+PKG_LIB =    -Wl,--no-as-needed -ldeepmd_cc -ltensorflow_cc -ltensorflow_framework -Wl,-rpath=/data/home/scv6266/run/test/tensorflow_root/lib -Wl,-rpath=/data/home/scv6266/run/WORK/hzt/DeepSpin_final/deepmd_root/lib
+PKG_CPP_DEPENDS = 
+PKG_LINK_DEPENDS = 
+
+PKG_SYSINC = 
+PKG_SYSLIB = 
+PKG_SYSPATH = 

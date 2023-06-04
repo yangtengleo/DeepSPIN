@@ -1,0 +1,67 @@
+# bcc iron in a 3d periodic box
+
+clear 
+units 		metal
+atom_style 	spin
+
+dimension 	3
+boundary 	p p p
+
+# necessary for the serial algorithm (sametag)
+atom_modify 	map array 
+
+lattice 	bcc 2.8665
+region 		box block 0.0 5.0 0.0 5.0 0.0 5.0
+create_box 	1 box
+create_atoms 	1 box
+
+# setting mass, mag. moments, and interactions for bcc iron
+
+mass		1 55.845
+// 对单个/总体原子数值上的设置。        随机数种子 2.2uB
+set 		group all spin/random 31 2.2
+# set 		group all spin 2.2 0.0 0.0 1.0
+//          所有。      温度100K 随机数种子 是满足高斯分布 
+velocity 	all create 100 4928459 rot yes dist gaussian
+//                         原子的运动  磁性的变化 
+pair_style 	hybrid/overlay eam/alloy spin/exchange 3.5
+//          所有类型 所有原子
+pair_coeff 	* * eam/alloy Fe_Mishin2006.eam.alloy Fe
+//                                     cut off 多项式系数
+pair_coeff 	* * spin/exchange exchange 3.4 0.02726 0.2171 1.841 offset yes
+//          0.1A的小格子 check.
+neighbor 	0.1 bin  
+//              每10步进行更新check是否合理，允许delay20步.
+neigh_modify 	every 10 check yes delay 20
+//                进动频率         赛曼能   外磁场大小 0 0 1方向
+fix 		1 all precession/spin zeeman 0.0 0.0 0.0 1.0
+//          加到体系的总能量中
+fix_modify 	1 energy yes
+//                朗之万热浴加热   初始温度 终止温度 随机树种子      
+fix 		2 all langevin/spin 0.0 0.0 21
+//                         是否允许原子动 允许moving frozen
+fix 		3 all nve/spin lattice moving
+timestep	0.0001 // ps
+
+# compute and output options
+
+compute 	out_mag    all spin
+compute 	out_pe     all pe
+compute 	out_ke     all ke
+compute 	out_temp   all temp
+
+variable 	magz      equal c_out_mag[3]
+variable 	magnorm   equal c_out_mag[4]
+variable 	emag      equal c_out_mag[5]
+variable 	tmag      equal c_out_mag[6]
+// log.lammps中 体系的总的性质
+thermo_style    custom step time v_magnorm v_tmag temp v_emag ke pe press etotal
+thermo          50
+
+// 每个原子独立的性质
+//                    计算原子        spin x y z分量 spin模长 磁性力 x y z分量
+compute 	outsp all property/atom spx spy spz sp fmx fmy fmz
+//          编号 所有      100步 名字               每个原子类型 x y z
+dump 		1 all custom 100 dump_iron.lammpstrj type x y z c_outsp[1] c_outsp[2] c_outsp[3]
+
+run 		1000
